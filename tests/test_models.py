@@ -3,7 +3,7 @@
 import numpy as np
 import numpy.testing as npt
 
-from inflammation.models import daily_mean, daily_max
+from inflammation.models import daily_mean, daily_max, daily_min
 
 def test_daily_mean_zeros():
     """Test that mean function works for an array of zeros."""
