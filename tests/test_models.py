@@ -55,6 +55,7 @@ def test_daily_min(test, expected):
     """Test min function works for array of zeroes, positive, and negative integers."""
     npt.assert_array_equal(daily_min(np.array(test)), np.array(expected))
 
+<<<<<<< HEAD
 
 @pytest.mark.parametrize(
     "test, expected, expect_raises",
@@ -110,3 +111,10 @@ def test_patient_normalise(test, expected, expect_raises):
     else:
         result = patient_normalise(np.array(test))
         npt.assert_allclose(result, np.array(expected), rtol=1e-2, atol=1e-2)
+=======
+def test_daily_min_string():
+    """Test for TypeError when passing strings"""
+
+    with pytest.raises(TypeError):
+        error_expected = daily_min([['Hello', 'there'], ['General', 'Kenobi']])
+>>>>>>> 9709151b273e5717fa3dc4a971ba7ce423edcbfa
