@@ -63,55 +63,69 @@ def test_daily_min_string():
 
 
 @pytest.mark.parametrize(
-    "test, expected, expect_raises",
+    "test, expected, expect_raises, match",
 [
         (
             [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
             [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
             None,
+            None,
         ),
         (
             [[1, 1, 1], [1, 1, 1], [1, 1, 1]],
             [[1, 1, 1], [1, 1, 1], [1, 1, 1]],
+            None,
             None,
         ),
         (
             [[float('nan'), 1, 1], [1, 1, 1], [1, 1, 1]],
             [[0, 1, 1], [1, 1, 1], [1, 1, 1]],
             None,
+            None,
         ),
         (
             [[1, 2, 3], [4, 5, float('nan')], [7, 8, 9]],
             [[0.33, 0.67, 1], [0.8, 1, 0], [0.78, 0.89, 1]],
             None,
-        ),
-        (
-            [[-1, 2, 3], [4, 5, 6], [7, 8, 9]],
-            [[0, 0.67, 1], [0.67, 0.83, 1], [0.78, 0.89, 1]],
             None,
         ),
         (
             [[1, 2, 3], [4, 5, 6], [7, 8, 9]],
             [[0.33, 0.67, 1], [0.67, 0.83, 1], [0.78, 0.89, 1]],
+            None,
             None,
         ),
         (
             [[-1, 2, 3], [4, 5, 6], [7, 8, 9]],
             [[0, 0.67, 1], [0.67, 0.83, 1], [0.78, 0.89, 1]],
             ValueError,
+            'Inflammation values should not be negative',
         ),
         (
             [[1, 2, 3], [4, 5, 6], [7, 8, 9]],
             [[0.33, 0.67, 1], [0.67, 0.83, 1], [0.78, 0.89, 1]],
             None,
+            None,
+        ),
+        (
+            [1, 2, 3],
+            [],
+            TypeError,
+            'Inflammation data array does not have the right shape, should be 2D array'
+        ),
+        (
+            [[[1, 2, 3], [4, 5, 6], [7, 8, 9]], [[-1, 2, 3], [4, 5, 6], [7, 8, 9]]],
+            [],
+            TypeError,
+            'Inflammation data array does not have the right shape, should be 2D array'
         ),
     ])
-def test_patient_normalise(test, expected, expect_raises):
+def test_patient_normalise(test, expected, expect_raises, match):
     """Test normalisation works for arrays of one and positive integers.
        Test with a relative and absolute tolerance of 0.01."""
 
     if expect_raises is not None:
-        with pytest.raises(expect_raises):
+        with pytest.raises(expect_raises, match=match):
             patient_normalise(np.array(test))
     else:
         result = patient_normalise(np.array(test))
