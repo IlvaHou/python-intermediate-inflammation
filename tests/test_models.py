@@ -63,57 +63,67 @@ def test_daily_min_string():
 
 
 @pytest.mark.parametrize(
-    "test, expected, expect_raises",
+    "test, expected, expect_raises, match",
 [
         (
             [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
             [[0, 0, 0], [0, 0, 0], [0, 0, 0]],
             None,
+            None,
         ),
         (
             [[1, 1, 1], [1, 1, 1], [1, 1, 1]],
             [[1, 1, 1], [1, 1, 1], [1, 1, 1]],
+            None,
             None,
         ),
         (
             [[float('nan'), 1, 1], [1, 1, 1], [1, 1, 1]],
             [[0, 1, 1], [1, 1, 1], [1, 1, 1]],
             None,
+            None,
         ),
         (
             [[1, 2, 3], [4, 5, float('nan')], [7, 8, 9]],
             [[0.33, 0.67, 1], [0.8, 1, 0], [0.78, 0.89, 1]],
             None,
+            None,
         ),
         (
             [[1, 2, 3], [4, 5, 6], [7, 8, 9]],
             [[0.33, 0.67, 1], [0.67, 0.83, 1], [0.78, 0.89, 1]],
+            None,
             None,
         ),
         (
             [[-1, 2, 3], [4, 5, 6], [7, 8, 9]],
             None,
-            ValueError('Inflammation values should not be negative'),
+            ValueError,
+            "Inflammation values should not be negative",
         ),
         (
             [[1, 2, 3], [4, 5, 6], [7, 8, 9]],
             [[0.33, 0.67, 1], [0.67, 0.83, 1], [0.78, 0.89, 1]],
             None,
+            None,
         ),
         (
             'hello',
             None,
-            TypeError('Inflammation data is not a numpy array, please check the format of the data'),
+            TypeError,
+            "Inflammation data is not a numpy array, please check the format of the data",
         ),
         (
             [1, 2, 3],
             None,
-            TypeError('Inflammation data array does not have the right shape, should be 2D array'),
+            TypeError,
+            "Inflammation data array does not have the right shape, should be 2D array",
         ),
         (
             [[[1, 2, 3], [4, 5, 6], [7, 8, 9]], [[-1, 2, 3], [4, 5, 6], [7, 8, 9]]],
             None,
-            TypeError('Inflammation data array does not have the right shape, should be 2D array'),            
+            TypeError,
+            "Inflammation data array does not have the right shape, should be 2D array",
         )
 ])
 def test_patient_normalise(test, expected, expect_raises):
@@ -123,7 +133,7 @@ def test_patient_normalise(test, expected, expect_raises):
         test = np.array(test)
     if expect_raises is not None:
         with pytest.raises(expect_raises, match=str(expect_raises)):
-            patient_normalise(np.array(test))
+            patient_normalise(test)
     else:
-        result = patient_normalise(np.array(test))
+        result = patient_normalise(test)
         npt.assert_allclose(result, np.array(expected), rtol=1e-2, atol=1e-2)
