@@ -119,7 +119,8 @@ def test_daily_min_string():
 def test_patient_normalise(test, expected, expect_raises):
     """Test normalisation works for arrays of one and positive integers.
        Test with a relative and absolute tolerance of 0.01."""
-
+    if isinstance(test, list):
+        test = np.array(test)
     if expect_raises is not None:
         with pytest.raises(expect_raises, match=str(expect_raises)):
             patient_normalise(np.array(test))
